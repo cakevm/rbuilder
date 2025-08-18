@@ -29,7 +29,7 @@ use super::base_config::BaseConfig;
 /// Thread safe access to OrderPool to get orderflow
 #[derive(Debug)]
 pub struct OrderPoolSubscriber {
-    orderpool: Arc<Mutex<OrderPool>>,
+    pub orderpool: Arc<Mutex<OrderPool>>,
 }
 
 impl OrderPoolSubscriber {
