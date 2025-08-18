@@ -621,7 +621,7 @@ where
     Ok(bytes)
 }
 
-fn serialize_extra_data<S>(data: &Vec<u8>, serializer: S) -> Result<S::Ok, S::Error>
+fn serialize_extra_data<S>(data: &[u8], serializer: S) -> Result<S::Ok, S::Error>
 where
     S: Serializer,
 {
