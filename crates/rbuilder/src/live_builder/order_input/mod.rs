@@ -8,8 +8,8 @@ pub mod replaceable_order_sink;
 pub mod rpc_server;
 pub mod txpool_fetcher;
 
-use self::{
-    orderpool::{OrderPool, OrderPoolSubscriptionId},
+pub use self::{
+    orderpool::{OrderPool, OrderPoolSubscriptionId, OrdersForBlock},
     replaceable_order_sink::ReplaceableOrderSink,
 };
 use crate::primitives::{serialize::CancelShareBundle, BundleReplacementData, Order};
