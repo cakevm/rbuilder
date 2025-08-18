@@ -13,7 +13,7 @@ use crate::{
         inc_relay_accepted_submissions, inc_subsidized_blocks, inc_too_many_req_relay_errors,
         mark_submission_start_time,
     },
-    utils::{duration_ms, error_storage::store_error_event},
+    utils::duration_ms,
 };
 use ahash::HashMap;
 use alloy_primitives::{utils::format_ether, U256};
@@ -25,6 +25,7 @@ use tokio::{sync::Notify, time::Instant};
 use tokio_util::sync::CancellationToken;
 use tracing::{error, info, info_span, trace, warn, Instrument, Span};
 
+#[cfg(feature = "error-storage")]
 const SIM_ERROR_CATEGORY: &str = "submit_block_simulation";
 
 /// Contains the last pending block so far.
@@ -419,7 +420,8 @@ async fn submit_bid_to_the_relay(
         }
         Err(SubmitBlockErr::SimError(_)) => {
             inc_failed_block_simulations();
-            store_error_event(
+            #[cfg(feature = "error-storage")]
+            crate::utils::error_storage::store_error_event(
                 SIM_ERROR_CATEGORY,
                 relay_result.as_ref().unwrap_err().to_string().as_str(),
                 &signed_submit_request.submission,

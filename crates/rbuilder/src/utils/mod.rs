@@ -22,6 +22,7 @@ pub mod constants;
 mod noncer;
 pub use noncer::NonceCache;
 
+#[cfg(feature = "error-storage")]
 pub mod error_storage;
 pub mod fmt;
 
