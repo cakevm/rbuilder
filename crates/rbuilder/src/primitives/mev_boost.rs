@@ -4,14 +4,14 @@ use crate::mev_boost::{
 };
 use alloy_primitives::{utils::parse_ether, Address, U256};
 use governor::{DefaultDirectRateLimiter, Quota, RateLimiter};
-use serde::{Deserialize, Deserializer};
+use serde::{Deserialize, Deserializer, Serialize};
 use std::{env, sync::Arc, time::Duration};
 
 /// Usually human readable id for relays. Not used on anything on any protocol just to identify the relays.
 pub type MevBoostRelayID = String;
 
 /// Modes for a relay since we may use them for different purposes.
-#[derive(Debug, Deserialize, Clone, PartialEq, Eq, Default)]
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq, Default)]
 pub enum RelayMode {
     /// Submits bids, gets slot info. No extra headers on bidding.
     #[serde(rename = "full")]
@@ -42,7 +42,7 @@ impl RelayMode {
     }
 }
 
-#[derive(Debug, Clone, Deserialize, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq, Default)]
 #[serde(deny_unknown_fields)]
 pub struct RelayConfig {
     pub name: String,
@@ -78,7 +78,7 @@ pub struct RelayConfig {
     pub can_ignore_gas_limit: Option<bool>,
 }
 
-#[derive(Debug, Clone, Deserialize, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq, Default)]
 #[serde(deny_unknown_fields)]
 pub struct RelaySubmitConfig {
     /// true->ssz false->json
