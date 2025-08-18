@@ -5,15 +5,11 @@
 pub mod payload_source;
 pub mod relay_epoch_cache;
 
+pub use crate::live_builder::payload_events::relay_epoch_cache::{RelaysForSlotData, SlotData};
+
 use crate::{
     beacon_api_client::Client,
-    live_builder::{
-        payload_events::{
-            payload_source::PayloadSourceMuxer,
-            relay_epoch_cache::{RelaysForSlotData, SlotData},
-        },
-        SlotSource,
-    },
+    live_builder::{payload_events::payload_source::PayloadSourceMuxer, SlotSource},
     primitives::mev_boost::{MevBoostRelayID, MevBoostRelaySlotInfoProvider},
     utils::{format_offset_datetime_rfc3339, timestamp_ms_to_offset_datetime},
 };
