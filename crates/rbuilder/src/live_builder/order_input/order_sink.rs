@@ -14,7 +14,7 @@ use std::sync::Arc;
 /// insert_order/remove_order return a bool indicating if the operation was successful.
 /// This bool allows the source to cancel notifications on errors if needed.
 #[automock]
-pub trait OrderSink: Debug + Send {
+pub trait OrderSink: Debug + Send + Sync {
     fn insert_order(&mut self, order: Order) -> bool;
     fn remove_order(&mut self, id: OrderId) -> bool;
     /// @Pending remove this ugly hack to check if we can stop sending data.
