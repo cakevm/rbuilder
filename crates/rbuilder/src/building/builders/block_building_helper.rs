@@ -18,7 +18,7 @@ use crate::{
     },
     primitives::{order_statistics::OrderStatistics, SimValue, SimulatedOrder},
     telemetry::{self, add_block_fill_time, add_order_simulation_time},
-    utils::{check_block_hash_reader_health, elapsed_ms, HistoricalBlockError},
+    utils::{elapsed_ms, HistoricalBlockError},
 };
 
 use super::Block;
@@ -195,8 +195,9 @@ impl BlockBuildingHelperFromProvider {
         available_orders_statistics: OrderStatistics,
         cancel_on_fatal_error: CancellationToken,
     ) -> Result<Self, BlockBuildingHelperError> {
-        let last_committed_block = building_ctx.block() - 1;
-        check_block_hash_reader_health(last_committed_block, &state_provider)?;
+        // Improve init performance by not checking the block hash reader health.
+        // let last_committed_block = building_ctx.block() - 1;
+        // check_block_hash_reader_health(last_committed_block, &state_provider)?;
 
         let fee_recipient_balance_start = state_provider
             .account_balance(&building_ctx.attributes.suggested_fee_recipient)?
