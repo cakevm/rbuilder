@@ -49,42 +49,42 @@ codegen-units = 1
 incremental = false
 
 [workspace.dependencies]
-reth = { git = "https://github.com/paradigmxyz/reth", tag = "v1.6.0" }
-reth-cli-util = { git = "https://github.com/paradigmxyz/reth", tag = "v1.6.0" }
-reth-db = { git = "https://github.com/paradigmxyz/reth", tag = "v1.6.0" }
-reth-db-common = { git = "https://github.com/paradigmxyz/reth", tag = "v1.6.0" }
-reth-errors = { git = "https://github.com/paradigmxyz/reth", tag = "v1.6.0" }
-reth-payload-builder = { git = "https://github.com/paradigmxyz/reth", tag = "v1.6.0" }
-reth-node-api = { git = "https://github.com/paradigmxyz/reth", tag = "v1.6.0" }
-reth-node-ethereum = { git = "https://github.com/paradigmxyz/reth", tag = "v1.6.0" }
-reth-trie = { git = "https://github.com/paradigmxyz/reth", tag = "v1.6.0" }
-reth-trie-parallel = { git = "https://github.com/paradigmxyz/reth", tag = "v1.6.0" }
-reth-node-core = { git = "https://github.com/paradigmxyz/reth", tag = "v1.6.0" }
-reth-primitives = { git = "https://github.com/paradigmxyz/reth", tag = "v1.6.0"}
-reth-primitives-traits = { git = "https://github.com/paradigmxyz/reth", tag = "v1.6.0" }
-reth-provider = { git = "https://github.com/paradigmxyz/reth", tag = "v1.6.0", features = ["test-utils"] }
-reth-chainspec = { git = "https://github.com/paradigmxyz/reth", tag = "v1.6.0" }
-reth-evm = { git = "https://github.com/paradigmxyz/reth", tag = "v1.6.0" }
-reth-evm-ethereum = { git = "https://github.com/paradigmxyz/reth", tag = "v1.6.0" }
-reth-execution-errors = { git = "https://github.com/paradigmxyz/reth", tag = "v1.6.0" }
-reth-trie-db = { git = "https://github.com/paradigmxyz/reth", tag = "v1.6.0" }
-reth-transaction-pool = { git = "https://github.com/paradigmxyz/reth", tag = "v1.6.0" }
+reth = { git = "https://github.com/paradigmxyz/reth", rev = "91730cd" }
+reth-cli-util = { git = "https://github.com/paradigmxyz/reth", rev = "91730cd" }
+reth-db = { git = "https://github.com/paradigmxyz/reth", rev = "91730cd" }
+reth-db-common = { git = "https://github.com/paradigmxyz/reth", rev = "91730cd" }
+reth-errors = { git = "https://github.com/paradigmxyz/reth", rev = "91730cd" }
+reth-payload-builder = { git = "https://github.com/paradigmxyz/reth", rev = "91730cd" }
+reth-node-api = { git = "https://github.com/paradigmxyz/reth", rev = "91730cd" }
+reth-node-ethereum = { git = "https://github.com/paradigmxyz/reth", rev = "91730cd" }
+reth-trie = { git = "https://github.com/paradigmxyz/reth", rev = "91730cd" }
+reth-trie-parallel = { git = "https://github.com/paradigmxyz/reth", rev = "91730cd" }
+reth-node-core = { git = "https://github.com/paradigmxyz/reth", rev = "91730cd" }
+reth-primitives = { git = "https://github.com/paradigmxyz/reth", rev = "91730cd"}
+reth-primitives-traits = { git = "https://github.com/paradigmxyz/reth", rev = "91730cd" }
+reth-provider = { git = "https://github.com/paradigmxyz/reth", rev = "91730cd", features = ["test-utils"] }
+reth-chainspec = { git = "https://github.com/paradigmxyz/reth", rev = "91730cd" }
+reth-evm = { git = "https://github.com/paradigmxyz/reth", rev = "91730cd" }
+reth-evm-ethereum = { git = "https://github.com/paradigmxyz/reth", rev = "91730cd" }
+reth-execution-errors = { git = "https://github.com/paradigmxyz/reth", rev = "91730cd" }
+reth-trie-db = { git = "https://github.com/paradigmxyz/reth", rev = "91730cd" }
+reth-transaction-pool = { git = "https://github.com/paradigmxyz/reth", rev = "91730cd" }
 
 # compatible with reth v1.6.0 dependencies
-revm = { version = "27.0.3", features = [
+revm = { version = "28.0.1", features = [
     "std",
     "secp256k1",
     "optional_balance_check",
 ], default-features = false }
-revm-inspectors = { version = "0.27.1", default-features = false  }
+revm-inspectors = { version = "0.28.0", default-features = false  }
 
 ethereum_ssz_derive = "0.9.0"
 ethereum_ssz = "0.9.0"
 
-alloy-primitives = { version = "1.3.0", features = ["getrandom"] }
+alloy-primitives = { version = "1.3.1", features = ["getrandom"] }
 alloy-rlp = "0.3.10"
 alloy-chains = "0.2.5"
-alloy-evm = { version = "0.15", default-features = false }
+alloy-evm = { version = "0.18.2", default-features = false }
 alloy-provider = { version = "1.0.23", features = ["ipc", "pubsub", "ws"] }
 alloy-eips = { version = "1.0.23" }
 alloy-rpc-types = { version = "1.0.23" }
@@ -99,14 +99,14 @@ alloy-rpc-types-eth = { version = "1.0.23" }
 alloy-signer-local = { version = "1.0.23" }
 alloy-trie = { version = "0.9.0" }
 
-async-trait = { version = "0.1.83" }
+async-trait = { version = "0.1.68" }
 clap = { version = "4.4.3", features = ["derive", "env"] }
 clap_builder = { version = "4.5.19" }
-thiserror = { version = "1.0.64" }
+thiserror = { version = "2.0.0" }
 eyre = { version = "0.6.12" }
-jsonrpsee = { version = "0.24.4" }
-parking_lot = { version = "0.12.3" }
-tokio = { version = "1.40.0" }
+jsonrpsee = { version = "0.25.1" }
+parking_lot = { version = "0.12" }
+tokio = { version = "1.44.2" }
 reqwest = { version = "0.12.8" }
 serde = { version = "1.0.210" }
 serde_json = { version = "1.0.128" }
@@ -126,7 +126,7 @@ lazy_static = "1.4.0"
 tikv-jemallocator = { version = "0.6" }
 tracing = "0.1.37"
 metrics = { version = "0.24.1" }
-ahash = "0.8.6"
+ahash = "0.8"
 time = { version = "0.3.36", features = ["macros", "formatting", "parsing"] }
 
 eth-sparse-mpt = { path = "crates/eth-sparse-mpt" }

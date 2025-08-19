@@ -1149,7 +1149,7 @@ mod test {
 
         // Serialize to JSON
         let serialized = serde_json::to_string_pretty(&config).expect("Failed to serialize config");
-        println!("Serialized config:\n{}", serialized);
+        println!("Serialized config:\n{serialized}");
 
         // Deserialize back
         let deserialized: Config =
@@ -1174,6 +1174,6 @@ mod test {
         // Test deserialization
         let deserialized: EnvOrValue<String> =
             serde_json::from_str(&serialized).expect("Failed to deserialize");
-        assert_eq!(format!("{:?}", env_value), format!("{:?}", deserialized));
+        assert_eq!(format!("{env_value:?}"), format!("{:?}", deserialized));
     }
 }

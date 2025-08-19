@@ -52,8 +52,8 @@ lt: lint test ## Run "lint" and "test"
 .PHONY: fmt
 fmt: ## Format the code
 	cargo fmt
-	cargo fix --allow-staged
-	cargo clippy --features "$(FEATURES)" --fix --allow-staged
+	cargo fix --allow-staged --allow-dirty
+	cargo clippy --features "$(FEATURES)" --fix --allow-staged --allow-dirty
 
 .PHONY: bench
 bench: ## Run benchmarks

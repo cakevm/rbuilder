@@ -8,7 +8,6 @@ use fetch::MissingNodesFetcher;
 use parking_lot::{Mutex, RwLock};
 use reth_provider::{
     providers::ConsistentDbView, BlockReader, DatabaseProviderFactory, ExecutionOutcome,
-    StateCommitmentProvider,
 };
 use reth_trie::{Nibbles, TrieAccount};
 use revm::state::AccountInfo;
@@ -232,7 +231,6 @@ pub fn prefetch_proofs<'a, Provider>(
 ) -> Result<SparseTrieMetrics, SparseTrieError>
 where
     Provider: DatabaseProviderFactory<Provider: BlockReader> + Send + Sync,
-    Provider: StateCommitmentProvider,
 {
     let mut metrics = SparseTrieMetrics::default();
     let mut fetcher = MissingNodesFetcher::default();
@@ -365,7 +363,6 @@ impl RootHashCalculator {
     ) -> Result<(), SparseTrieError>
     where
         Provider: DatabaseProviderFactory<Provider: BlockReader> + Send + Sync,
-        Provider: StateCommitmentProvider,
     {
         stats.start();
 
@@ -562,7 +559,6 @@ impl RootHashCalculator {
     ) -> Result<(), SparseTrieError>
     where
         Provider: DatabaseProviderFactory<Provider: BlockReader> + Send + Sync,
-        Provider: StateCommitmentProvider,
     {
         let fetcher = Arc::new(Mutex::new(MissingNodesFetcher::default()));
 
@@ -805,7 +801,6 @@ impl RootHashCalculator {
     ) -> Result<(), SparseTrieError>
     where
         Provider: DatabaseProviderFactory<Provider: BlockReader> + Send + Sync,
-        Provider: StateCommitmentProvider,
     {
         let mut fetcher = MissingNodesFetcher::default();
 
@@ -862,7 +857,6 @@ impl RootHashCalculator {
     ) -> Result<(B256, SparseTrieMetrics), SparseTrieError>
     where
         Provider: DatabaseProviderFactory<Provider: BlockReader> + Send + Sync,
-        Provider: StateCommitmentProvider,
     {
         let mut stats = Stats::default();
         stats.start_global();

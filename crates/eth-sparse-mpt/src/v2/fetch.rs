@@ -9,7 +9,7 @@ use alloy_primitives::B256;
 use alloy_trie::Nibbles;
 use reth_provider::{
     providers::ConsistentDbView, BlockHashReader, BlockNumReader, BlockReader, DBProvider,
-    DatabaseProviderFactory, StateCommitmentProvider,
+    DatabaseProviderFactory,
 };
 use reth_trie::{
     proof::{Proof, StorageProof},
@@ -53,7 +53,6 @@ impl MissingNodesFetcher {
     ) -> Result<usize, SparseTrieError>
     where
         Provider: DatabaseProviderFactory<Provider: BlockReader> + Send + Sync,
-        Provider: StateCommitmentProvider,
     {
         let fetched_nodes: Arc<Mutex<usize>> = Default::default();
 
