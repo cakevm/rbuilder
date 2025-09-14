@@ -77,7 +77,7 @@ impl IpcStateProviderFactory {
     }
 }
 
-#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(default, deny_unknown_fields)]
 pub struct IpcProviderConfig {
     pub(crate) request_timeout_ms: u64,

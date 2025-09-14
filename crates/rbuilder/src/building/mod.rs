@@ -97,7 +97,7 @@ pub struct BlockBuildingContext {
     pub attributes: EthPayloadBuilderAttributes,
     pub chain_spec: Arc<ChainSpec>,
     /// cached chain_spec.blob_params_at_timestamp(attributes.timestamp()).max_blob_gas_per_block()
-    max_blob_gas_per_block: u64,
+    pub max_blob_gas_per_block: u64,
     /// Signer to sign builder payoffs (end of block and mev-share).
     /// Is Option to avoid any possible bug (losing money!) with payoffs.
     /// None: coinbase = attributes.suggested_fee_recipient. No payoffs allowed.

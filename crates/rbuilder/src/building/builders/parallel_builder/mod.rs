@@ -17,7 +17,7 @@ use eyre::Result;
 use itertools::Itertools;
 use results_aggregator::BestResults;
 use reth_provider::StateProvider;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use simulation_cache::SharedSimulationCache;
 use std::{
     sync::{mpsc as std_mpsc, Arc},
@@ -51,7 +51,7 @@ pub type ConflictResolutionResultPerGroup = (GroupId, (ResolutionResult, Conflic
 /// * `merge_wait_time_ms` - time to wait for merging to finish before consuming new orders.
 /// * `safe_sorting_only` - Will only use sort modes that don't risk breaking the "best refund for user" since we don't megabundle the bundles (only the sbundles).
 ///   This flag is just to test the algo until we solve every issue.
-#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(deny_unknown_fields)]
 pub struct ParallelBuilderConfig {
     pub discard_txs: bool,

@@ -22,15 +22,13 @@ use crate::{
     primitives::{MempoolTx, Order, TransactionSignedEcRecoveredWithBlobs},
     provider::StateProviderFactory,
     telemetry::{inc_active_slots, mark_building_started, reset_histogram_metrics},
-    utils::{
-        error_storage::spawn_error_storage_writer, format_offset_datetime_rfc3339,
-        provider_head_state::ProviderHeadState, Signer,
-    },
+    utils::{format_offset_datetime_rfc3339, provider_head_state::ProviderHeadState, Signer},
 };
 use alloy_consensus::Header;
 use alloy_primitives::{Address, B256};
 use block_list_provider::BlockListProvider;
 use building::BlockBuildingPool;
+#[cfg(feature = "error-storage")]
 use eyre::Context;
 use jsonrpsee::RpcModule;
 use order_input::ReplaceableOrderPoolCommand;
@@ -153,10 +151,18 @@ where
         );
         let timings = TimingsConfig::ethereum();
 
+        #[cfg(feature = "error-storage")]
         if let Some(error_storage_path) = self.error_storage_path {
-            spawn_error_storage_writer(error_storage_path, self.global_cancellation.clone())
-                .await
-                .with_context(|| "Error spawning error storage writer")?;
+            crate::utils::error_storage::spawn_error_storage_writer(
+                error_storage_path,
+                self.global_cancellation.clone(),
+            )
+            .await
+            .with_context(|| "Error spawning error storage writer")?;
+        }
+        #[cfg(not(feature = "error-storage"))]
+        if self.error_storage_path.is_some() {
+            warn!("Error storage path provided but error-storage feature is not enabled");
         }
 
         let mut inner_jobs_handles = Vec::new();

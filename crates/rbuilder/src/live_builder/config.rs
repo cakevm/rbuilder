@@ -70,7 +70,7 @@ use reth_node_api::NodeTypesWithDBAdapter;
 use reth_node_ethereum::EthereumNode;
 use reth_primitives::StaticFileSegment;
 use reth_provider::StaticFileProviderFactory;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_with::{serde_as, OneOrMany};
 use std::{
     collections::HashMap,
@@ -98,14 +98,14 @@ pub const BID_SOURCE_TIMEOUT_SECS: u64 = 28;
 /// Don't want to waste too much time in case i failed to non-boost block.
 pub const BID_SOURCE_WAIT_TIME_SECS: u64 = 2;
 
-#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(tag = "algo", rename_all = "kebab-case", deny_unknown_fields)]
 pub enum SpecificBuilderConfig {
     ParallelBuilder(ParallelBuilderConfig),
     OrderingBuilder(OrderingBuilderConfig),
 }
 
-#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
 pub struct BuilderConfig {
     pub name: String,
     #[serde(flatten)]
@@ -113,7 +113,7 @@ pub struct BuilderConfig {
 }
 
 #[serde_as]
-#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(default, deny_unknown_fields)]
 pub struct Config {
     #[serde(flatten)]
@@ -138,7 +138,7 @@ const DEFAULT_ASK_FOR_FILTERING_VALIDATORS: bool = false;
 const DEFAULT_CAN_IGNORE_GAS_LIMIT: bool = false;
 
 #[serde_as]
-#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(default, deny_unknown_fields)]
 pub struct L1Config {
     // Relay Submission configuration
@@ -156,7 +156,7 @@ pub struct L1Config {
     pub optimistic_max_bid_value_eth: String,
 
     /// Name kept singular for backwards compatibility
-    #[serde_as(deserialize_as = "OneOrMany<EnvOrValue<String>>")]
+    #[serde_as(as = "OneOrMany<_>")]
     pub cl_node_url: Vec<EnvOrValue<String>>,
 
     /// Genesis fork version for the chain. If not provided it will be fetched from the beacon client.
@@ -994,7 +994,10 @@ where
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::building::builders::ordering_builder::OrderingBuilderConfig;
+    use crate::building::Sorting;
     use crate::live_builder::base_config::load_config_toml_and_env;
+    use crate::live_builder::base_config::EnvOrValue;
     use alloy_primitives::{address, fixed_bytes};
     use std::env;
     use url::Url;
@@ -1121,5 +1124,56 @@ mod test {
             found,
             fixed_bytes!("00000001aaf2630a2874a74199f4b5d11a7d6377f363a236271bff4bf8eb4ab3")
         );
+    }
+
+    #[test]
+    fn test_config_serialization() {
+        let config = Config {
+            base_config: BaseConfig::default(),
+            l1_config: L1Config::default(),
+            builders: vec![BuilderConfig {
+                name: "test-builder".to_string(),
+                builder: SpecificBuilderConfig::OrderingBuilder(OrderingBuilderConfig {
+                    discard_txs: true,
+                    sorting: Sorting::MevGasPrice,
+                    failed_order_retries: 3,
+                    drop_failed_orders: false,
+                    coinbase_payment: false,
+                    build_duration_deadline_ms: Some(1000),
+                    ignore_mempool_profit_on_bundles: false,
+                }),
+            }],
+            slot_delta_to_start_bidding_ms: Some(-5000),
+            subsidy: Some("0.001".to_string()),
+        };
+
+        // Serialize to JSON
+        let serialized = serde_json::to_string_pretty(&config).expect("Failed to serialize config");
+        println!("Serialized config:\n{serialized}");
+
+        // Deserialize back
+        let deserialized: Config =
+            serde_json::from_str(&serialized).expect("Failed to deserialize config");
+
+        // Check that they're equal
+        assert_eq!(config, deserialized);
+    }
+
+    #[test]
+    fn test_env_or_value_serialization() {
+        // Test with a regular value
+        let regular_value: EnvOrValue<String> = EnvOrValue::from("test-value");
+        let serialized = serde_json::to_string(&regular_value).expect("Failed to serialize");
+        assert_eq!(serialized, "\"test-value\"");
+
+        // Test with an env variable reference
+        let env_value: EnvOrValue<String> = EnvOrValue::from("env:MY_SECRET");
+        let serialized = serde_json::to_string(&env_value).expect("Failed to serialize");
+        assert_eq!(serialized, "\"env:MY_SECRET\"");
+
+        // Test deserialization
+        let deserialized: EnvOrValue<String> =
+            serde_json::from_str(&serialized).expect("Failed to deserialize");
+        assert_eq!(format!("{env_value:?}"), format!("{:?}", deserialized));
     }
 }

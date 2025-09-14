@@ -22,7 +22,7 @@ use crate::{
 use ahash::{HashMap, HashSet};
 use derivative::Derivative;
 use reth_provider::StateProvider;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::{
     marker::PhantomData,
     sync::Arc,
@@ -37,7 +37,7 @@ use super::{
     BlockBuildingAlgorithmInput,
 };
 
-#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(deny_unknown_fields)]
 pub struct OrderingBuilderConfig {
     /// If a tx inside a bundle or sbundle fails with TransactionErr (don't confuse this with reverting which is TransactionOk with !.receipt.success)

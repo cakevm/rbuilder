@@ -71,7 +71,7 @@ sqlx = { version = "0.7.1", features = [
     "bigdecimal",
     "time",
     "uuid",
-] }
+], optional = true }
 tracing.workspace = true
 tracing-subscriber = { version = "0.3.18", features = ["env-filter", "json"] }
 futures = "0.3.28"
@@ -144,7 +144,30 @@ assert_matches = "1.5.0"
 criterion = { version = "0.5.1", features = ["html_reports", "async_tokio"] }
 
 [features]
+default = ["backtest", "error-storage"]
 redact-sensitive = []
+backtest = ["sqlx"]
+error-storage = ["sqlx"]
+
+[[bin]]
+name = "backtest-fetch"
+required-features = ["backtest"]
+
+[[bin]]
+name = "backtest-build-block"
+required-features = ["backtest"]
+
+[[bin]]
+name = "backtest-build-range"
+required-features = ["backtest"]
+
+[[bin]]
+name = "backtest-build-synthetic-block"
+required-features = ["backtest"]
+
+[[bin]]
+name = "misc-relays-slot"
+required-features = ["backtest"]
 
 [[bench]]
 name = "bench_main"

@@ -10,7 +10,7 @@ use core::fmt::Debug;
 /// Some Orders contain replacement_key so they can replace previous ones.
 /// Due to source problems insert_order/remove_bundle can arrive out of order so Orders also have a sequence number
 /// so we can identify the newest.
-pub trait ReplaceableOrderSink: Debug + Send {
+pub trait ReplaceableOrderSink: Debug + Send + Sync {
     fn insert_order(&mut self, order: Order) -> bool;
     fn remove_bundle(&mut self, replacement_data: BundleReplacementData) -> bool;
     fn remove_sbundle(&mut self, key: ShareBundleReplacementKey) -> bool;

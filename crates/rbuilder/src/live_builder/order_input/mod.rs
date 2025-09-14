@@ -8,8 +8,8 @@ pub mod replaceable_order_sink;
 pub mod rpc_server;
 pub mod txpool_fetcher;
 
-use self::{
-    orderpool::{OrderPool, OrderPoolSubscriptionId},
+pub use self::{
+    orderpool::{OrderPool, OrderPoolSubscriptionId, OrdersForBlock},
     replaceable_order_sink::ReplaceableOrderSink,
 };
 use crate::primitives::{serialize::CancelShareBundle, BundleReplacementData, Order};
@@ -29,7 +29,7 @@ use super::base_config::BaseConfig;
 /// Thread safe access to OrderPool to get orderflow
 #[derive(Debug)]
 pub struct OrderPoolSubscriber {
-    orderpool: Arc<Mutex<OrderPool>>,
+    pub orderpool: Arc<Mutex<OrderPool>>,
 }
 
 impl OrderPoolSubscriber {

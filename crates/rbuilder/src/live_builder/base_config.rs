@@ -26,7 +26,7 @@ use reth_node_api::NodeTypesWithDBAdapter;
 use reth_node_ethereum::EthereumNode;
 use reth_primitives::StaticFileSegment;
 use reth_provider::StaticFileProviderFactory;
-use serde::{Deserialize, Deserializer};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use serde_with::{serde_as, DeserializeAs};
 use std::{
     env::var,
@@ -56,7 +56,7 @@ const ENV_PREFIX: &str = "env:";
 /// It allows us to create a base LiveBuilder with no algorithms or custom bidding.
 /// The final configuration should usually include one of this and use it to create the base LiveBuilder to then upgrade it as needed.
 #[serde_as]
-#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(default, deny_unknown_fields)]
 pub struct BaseConfig {
     pub full_telemetry_server_port: u16,
@@ -108,7 +108,10 @@ pub struct BaseConfig {
     /// if true will not allow to start without a blocklist or with an empty blocklist.
     pub require_non_empty_blocklist: Option<bool>,
 
-    #[serde(deserialize_with = "deserialize_extra_data")]
+    #[serde(
+        deserialize_with = "deserialize_extra_data",
+        serialize_with = "serialize_extra_data"
+    )]
     pub extra_data: Vec<u8>,
 
     /// mev-share bundles coming from this address are treated in a special way(see [`ShareBundleMerger`])
@@ -493,6 +496,15 @@ impl<'de, T: FromStr> Deserialize<'de> for EnvOrValue<T> {
     }
 }
 
+impl<T> Serialize for EnvOrValue<T> {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        self.0.serialize(serializer)
+    }
+}
+
 // Helper function to resolve Vec<EnvOrValue<T>> to Vec<T>
 pub fn resolve_env_or_values<T: FromStr>(values: &[EnvOrValue<T>]) -> eyre::Result<Vec<T>> {
     values
@@ -607,6 +619,14 @@ where
         ));
     }
     Ok(bytes)
+}
+
+fn serialize_extra_data<S>(data: &[u8], serializer: S) -> Result<S::Ok, S::Error>
+where
+    S: Serializer,
+{
+    let s = String::from_utf8_lossy(data);
+    serializer.serialize_str(&s)
 }
 
 /// Open reth db and DB should be opened once per process but it can be cloned and moved to different threads.

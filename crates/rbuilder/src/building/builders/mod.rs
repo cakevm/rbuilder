@@ -17,7 +17,7 @@ use crate::{
 use ahash::HashSet;
 use alloy_eips::eip4844::BlobTransactionSidecar;
 use alloy_primitives::{Address, Bytes};
-use block_building_helper::BiddableUnfinishedBlock;
+pub use block_building_helper::BiddableUnfinishedBlock;
 use reth::primitives::SealedBlock;
 use std::{fmt::Debug, sync::Arc};
 use tokio::sync::{

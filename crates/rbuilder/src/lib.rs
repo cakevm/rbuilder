@@ -1,3 +1,4 @@
+#[cfg(feature = "backtest")]
 pub mod backtest;
 pub mod beacon_api_client;
 pub mod building;
