@@ -11,7 +11,6 @@ use reth_errors::ProviderError;
 use reth_execution_errors::trie::StateProofError;
 use reth_provider::{
     providers::ConsistentDbView, BlockReader, DBProvider, DatabaseProviderFactory,
-    StateCommitmentProvider,
 };
 use reth_trie::{proof::Proof, MultiProof as RethMultiProof, MultiProofTargets, EMPTY_ROOT_HASH};
 use reth_trie_db::{DatabaseHashedCursorFactory, DatabaseTrieCursorFactory};
@@ -62,7 +61,6 @@ pub struct TrieFetcher<Provider> {
 impl<Provider> TrieFetcher<Provider>
 where
     Provider: DatabaseProviderFactory<Provider: BlockReader> + Send + Sync,
-    Provider: StateCommitmentProvider,
 {
     pub fn new(consistent_db_view: ConsistentDbView<Provider>) -> Self {
         Self { consistent_db_view }
