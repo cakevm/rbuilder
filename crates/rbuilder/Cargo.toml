@@ -124,7 +124,7 @@ prost = "0.13"
 prost-types = "0.13"
 
 # IPC state provider deps
-reipc = { git = "https://github.com/nethermindeth/reipc.git", rev = "3837f3539201f948dd1c2c96a85a60d589feb4c6" }
+reipc = { git = "https://github.com/cakevm/reipc.git", rev = "5f4bf40" }
 quick_cache = "0.6.11"
 
 [target.'cfg(not(target_env = "msvc"))'.dependencies]
