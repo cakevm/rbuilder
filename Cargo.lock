@@ -238,23 +238,6 @@ dependencies = [
 
 [[package]]
 name = "alloy-evm"
-version = "0.21.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "48e536feefca2ba96c75798ac75a31046e8adfcefecdb6653803361045cc65b9"
-dependencies = [
- "alloy-consensus",
- "alloy-eips",
- "alloy-hardforks 0.3.5",
- "alloy-primitives 1.4.0",
- "alloy-sol-types",
- "auto_impl",
- "derive_more 2.0.1",
- "revm",
- "thiserror 2.0.17",
-]
-
-[[package]]
-name = "alloy-evm"
 version = "0.21.2"
 source = "git+https://github.com/alloy-rs/evm?rev=3c1447a#3c1447ac9d54111db3246b00b164a6ffd5fb1cb4"
 dependencies = [
@@ -8950,7 +8933,7 @@ dependencies = [
  "alloy-chains",
  "alloy-consensus",
  "alloy-eips",
- "alloy-evm 0.21.1",
+ "alloy-evm",
  "alloy-json-rpc",
  "alloy-network",
  "alloy-network-primitives",
@@ -9391,7 +9374,7 @@ dependencies = [
  "alloy-chains",
  "alloy-consensus",
  "alloy-eips",
- "alloy-evm 0.21.2",
+ "alloy-evm",
  "alloy-genesis",
  "alloy-primitives 1.4.0",
  "alloy-trie",
@@ -9927,7 +9910,7 @@ source = "git+https://github.com/cakevm/reth?rev=c46fd77#c46fd772307c49b19e64e09
 dependencies = [
  "alloy-consensus",
  "alloy-eips",
- "alloy-evm 0.21.2",
+ "alloy-evm",
  "alloy-primitives 1.4.0",
  "alloy-rlp",
  "alloy-rpc-types-engine",
@@ -10246,7 +10229,7 @@ source = "git+https://github.com/cakevm/reth?rev=c46fd77#c46fd772307c49b19e64e09
 dependencies = [
  "alloy-consensus",
  "alloy-eips",
- "alloy-evm 0.21.2",
+ "alloy-evm",
  "alloy-primitives 1.4.0",
  "auto_impl",
  "derive_more 2.0.1",
@@ -10269,7 +10252,7 @@ source = "git+https://github.com/cakevm/reth?rev=c46fd77#c46fd772307c49b19e64e09
 dependencies = [
  "alloy-consensus",
  "alloy-eips",
- "alloy-evm 0.21.2",
+ "alloy-evm",
  "alloy-primitives 1.4.0",
  "alloy-rpc-types-engine",
  "derive_more 2.0.1",
@@ -10288,7 +10271,7 @@ name = "reth-execution-errors"
 version = "1.8.2"
 source = "git+https://github.com/cakevm/reth?rev=c46fd77#c46fd772307c49b19e64e09487e3bb4ddb85117c"
 dependencies = [
- "alloy-evm 0.21.2",
+ "alloy-evm",
  "alloy-primitives 1.4.0",
  "alloy-rlp",
  "nybbles",
@@ -10303,7 +10286,7 @@ source = "git+https://github.com/cakevm/reth?rev=c46fd77#c46fd772307c49b19e64e09
 dependencies = [
  "alloy-consensus",
  "alloy-eips",
- "alloy-evm 0.21.2",
+ "alloy-evm",
  "alloy-primitives 1.4.0",
  "derive_more 2.0.1",
  "reth-ethereum-primitives",
@@ -11195,7 +11178,7 @@ dependencies = [
  "alloy-consensus",
  "alloy-dyn-abi",
  "alloy-eips",
- "alloy-evm 0.21.2",
+ "alloy-evm",
  "alloy-genesis",
  "alloy-network",
  "alloy-primitives 1.4.0",
@@ -11392,7 +11375,7 @@ dependencies = [
  "alloy-consensus",
  "alloy-dyn-abi",
  "alloy-eips",
- "alloy-evm 0.21.2",
+ "alloy-evm",
  "alloy-json-rpc",
  "alloy-network",
  "alloy-primitives 1.4.0",
@@ -11435,7 +11418,7 @@ source = "git+https://github.com/cakevm/reth?rev=c46fd77#c46fd772307c49b19e64e09
 dependencies = [
  "alloy-consensus",
  "alloy-eips",
- "alloy-evm 0.21.2",
+ "alloy-evm",
  "alloy-network",
  "alloy-primitives 1.4.0",
  "alloy-rpc-client",
