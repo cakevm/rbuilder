@@ -18,6 +18,7 @@ use reth::{
     providers::ProviderFactory,
     rpc::types::{engine::PayloadAttributes, Withdrawal},
 };
+use reth_provider::BlockWriter;
 use reth_chainspec::{ChainSpec, EthereumHardfork, MAINNET};
 use reth_db::{cursor::DbCursorRW, tables, transaction::DbTxMut};
 use reth_errors::ProviderResult;
@@ -141,7 +142,7 @@ impl TestChainState {
         let provider_factory = create_test_provider_factory();
         {
             let provider = provider_factory.provider_rw()?;
-            provider.insert_historical_block(
+            provider.insert_block(
                 Block::new(genesis_header.header().clone(), BlockBody::default())
                     .try_into_recovered()
                     .unwrap(),

@@ -47,7 +47,7 @@ where
     }
 
     fn header(&self, block_hash: &BlockHash) -> ProviderResult<Option<Header>> {
-        self.provider.header(block_hash)
+        self.provider.header(*block_hash)
     }
 
     fn block_hash(&self, number: BlockNumber) -> ProviderResult<Option<B256>> {

@@ -213,7 +213,7 @@ where
         let provider = self
             .check_consistency_and_reopen_if_needed()
             .map_err(|e| ProviderError::Database(DatabaseError::Other(e.to_string())))?;
-        provider.header(block_hash)
+        provider.header(*block_hash)
     }
 
     fn header_by_number(&self, num: u64) -> ProviderResult<Option<Header>> {
