@@ -71,12 +71,12 @@ reth-trie-db = { git = "https://github.com/cakevm/reth", rev = "870bf50" }
 reth-transaction-pool = { git = "https://github.com/cakevm/reth", rev = "870bf50" }
 
 # compatible with reth v1.8.2 dependencies
-revm = { version = "29.0.1", features = [
+revm = { version = "30.1.1", features = [
     "std",
     "secp256k1",
     "optional_balance_check",
 ], default-features = false }
-revm-inspectors = { version = "0.30.0", default-features = false }
+revm-inspectors = { version = "0.31.0", default-features = false }
 
 ethereum_ssz_derive = "0.9.0"
 ethereum_ssz = "0.9.0"
