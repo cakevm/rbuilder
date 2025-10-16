@@ -7,7 +7,7 @@ use parking_lot::Mutex;
 use revm::{
     context::{Cfg, ContextTr},
     handler::PrecompileProvider,
-    interpreter::{InputsImpl, InterpreterResult},
+    interpreter::{CallInputs, InterpreterResult},
     primitives::hardfork::SpecId,
 };
 use std::{num::NonZeroUsize, sync::Arc};
@@ -56,15 +56,14 @@ impl<CTX: ContextTr, P: PrecompileProvider<CTX, Output = InterpreterResult>> Pre
     fn run(
         &mut self,
         context: &mut CTX,
-        address: &Address,
-        inputs: &InputsImpl,
-        is_static: bool,
-        gas_limit: u64,
+        inputs: &CallInputs,
     ) -> Result<Option<Self::Output>, String> {
+        let address = inputs.bytecode_address;
+        let gas_limit = inputs.gas_limit;
         let key = (self.spec, inputs.input.bytes(context), gas_limit);
 
         // get the result if it exists
-        if let Some(precompiles) = self.cache.lock().get_mut(address) {
+        if let Some(precompiles) = self.cache.lock().get_mut(&address) {
             if let Some(result) = precompiles.get(&key) {
                 inc_precompile_cache_hits();
                 return result.clone().map(Some);
@@ -76,13 +75,13 @@ impl<CTX: ContextTr, P: PrecompileProvider<CTX, Output = InterpreterResult>> Pre
         // call the precompile if cache miss
         let output = self
             .precompile
-            .run(context, address, inputs, is_static, gas_limit);
+            .run(context, inputs);
 
         if let Some(output) = output.clone().transpose() {
             // insert the result into the cache
             self.cache
                 .lock()
-                .entry(*address)
+                .entry(address)
                 .or_insert(PrecompileResultCache::new(NonZeroUsize::new(2048).unwrap()))
                 .put(key, output);
         }
