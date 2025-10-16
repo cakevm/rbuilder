@@ -49,26 +49,26 @@ codegen-units = 1
 incremental = false
 
 [workspace.dependencies]
-reth = { git = "https://github.com/cakevm/reth", rev = "c46fd77" }
-reth-cli-util = { git = "https://github.com/cakevm/reth", rev = "c46fd77" }
-reth-db = { git = "https://github.com/cakevm/reth", rev = "c46fd77" }
-reth-db-common = { git = "https://github.com/cakevm/reth", rev = "c46fd77" }
-reth-errors = { git = "https://github.com/cakevm/reth", rev = "c46fd77" }
-reth-payload-builder = { git = "https://github.com/cakevm/reth", rev = "c46fd77" }
-reth-node-api = { git = "https://github.com/cakevm/reth", rev = "c46fd77" }
-reth-node-ethereum = { git = "https://github.com/cakevm/reth", rev = "c46fd77" }
-reth-trie = { git = "https://github.com/cakevm/reth", rev = "c46fd77" }
-reth-trie-parallel = { git = "https://github.com/cakevm/reth", rev = "c46fd77" }
-reth-node-core = { git = "https://github.com/cakevm/reth", rev = "c46fd77" }
-reth-primitives = { git = "https://github.com/cakevm/reth", rev = "c46fd77"}
-reth-primitives-traits = { git = "https://github.com/cakevm/reth", rev = "c46fd77" }
-reth-provider = { git = "https://github.com/cakevm/reth", rev = "c46fd77", features = ["test-utils"] }
-reth-chainspec = { git = "https://github.com/cakevm/reth", rev = "c46fd77" }
-reth-evm = { git = "https://github.com/cakevm/reth", rev = "c46fd77" }
-reth-evm-ethereum = { git = "https://github.com/cakevm/reth", rev = "c46fd77" }
-reth-execution-errors = { git = "https://github.com/cakevm/reth", rev = "c46fd77" }
-reth-trie-db = { git = "https://github.com/cakevm/reth", rev = "c46fd77" }
-reth-transaction-pool = { git = "https://github.com/cakevm/reth", rev = "c46fd77" }
+reth = { git = "https://github.com/cakevm/reth", rev = "870bf50" }
+reth-cli-util = { git = "https://github.com/cakevm/reth", rev = "870bf50" }
+reth-db = { git = "https://github.com/cakevm/reth", rev = "870bf50" }
+reth-db-common = { git = "https://github.com/cakevm/reth", rev = "870bf50" }
+reth-errors = { git = "https://github.com/cakevm/reth", rev = "870bf50" }
+reth-payload-builder = { git = "https://github.com/cakevm/reth", rev = "870bf50" }
+reth-node-api = { git = "https://github.com/cakevm/reth", rev = "870bf50" }
+reth-node-ethereum = { git = "https://github.com/cakevm/reth", rev = "870bf50" }
+reth-trie = { git = "https://github.com/cakevm/reth", rev = "870bf50" }
+reth-trie-parallel = { git = "https://github.com/cakevm/reth", rev = "870bf50" }
+reth-node-core = { git = "https://github.com/cakevm/reth", rev = "870bf50" }
+reth-primitives = { git = "https://github.com/cakevm/reth", rev = "870bf50"}
+reth-primitives-traits = { git = "https://github.com/cakevm/reth", rev = "870bf50" }
+reth-provider = { git = "https://github.com/cakevm/reth", rev = "870bf50", features = ["test-utils"] }
+reth-chainspec = { git = "https://github.com/cakevm/reth", rev = "870bf50" }
+reth-evm = { git = "https://github.com/cakevm/reth", rev = "870bf50" }
+reth-evm-ethereum = { git = "https://github.com/cakevm/reth", rev = "870bf50" }
+reth-execution-errors = { git = "https://github.com/cakevm/reth", rev = "870bf50" }
+reth-trie-db = { git = "https://github.com/cakevm/reth", rev = "870bf50" }
+reth-transaction-pool = { git = "https://github.com/cakevm/reth", rev = "870bf50" }
 
 # compatible with reth v1.8.2 dependencies
 revm = { version = "29.0.1", features = [
