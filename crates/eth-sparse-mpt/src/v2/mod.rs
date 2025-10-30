@@ -6,9 +6,7 @@ use alloy_primitives::{keccak256, Address, B256, U256};
 use dashmap::DashMap;
 use fetch::MissingNodesFetcher;
 use parking_lot::{Mutex, RwLock};
-use reth_provider::{
-    providers::ConsistentDbView, BlockReader, DatabaseProviderFactory, ExecutionOutcome,
-};
+use reth_provider::{BlockReader, DatabaseProviderFactory, ExecutionOutcome};
 use reth_trie::{Nibbles, TrieAccount};
 use revm::state::AccountInfo;
 use rustc_hash::FxBuildHasher;
@@ -225,7 +223,7 @@ impl StorageCalculator {
 }
 
 pub fn prefetch_proofs<'a, Provider>(
-    consistent_db_view: ConsistentDbView<Provider>,
+    provider: Provider,
     shared_cache: &SharedCacheV2,
     changed_data: impl Iterator<Item = &'a ChangedAccountData>,
 ) -> Result<SparseTrieMetrics, SparseTrieError>
@@ -244,7 +242,7 @@ where
             fetcher.add_missing_storage_node(&hashed_address, storage_node);
         }
     }
-    metrics.fetched_nodes += fetcher.fetch_nodes(shared_cache, &consistent_db_view)?;
+    metrics.fetched_nodes += fetcher.fetch_nodes(shared_cache, &provider)?;
 
     Ok(metrics)
 }
@@ -358,7 +356,7 @@ impl RootHashCalculator {
 
     fn do_first_fetch<Provider>(
         &mut self,
-        consistent_db_view: &ConsistentDbView<Provider>,
+        provider: &Provider,
         stats: &mut Stats,
     ) -> Result<(), SparseTrieError>
     where
@@ -412,7 +410,7 @@ impl RootHashCalculator {
         let mut fetcher = fetcher.lock();
         if !fetcher.is_empty() {
             stats.start_proof_fetch_db();
-            let nodes_fetched = fetcher.fetch_nodes(&self.shared_cache, consistent_db_view)?;
+            let nodes_fetched = fetcher.fetch_nodes(&self.shared_cache, provider)?;
             stats.fetched_nodes += nodes_fetched;
             stats.measure_proof_fetch_db_part();
         }
@@ -554,7 +552,7 @@ impl RootHashCalculator {
 
     fn fetch_missing_storage_nodes<Provider>(
         &mut self,
-        consistent_db_view: &ConsistentDbView<Provider>,
+        provider: &Provider,
         stats: &mut Stats,
     ) -> Result<(), SparseTrieError>
     where
@@ -584,7 +582,7 @@ impl RootHashCalculator {
         let mut fetcher = fetcher.lock();
         if !fetcher.is_empty() {
             stats.start_proof_fetch_db();
-            let nodes_fetched = fetcher.fetch_nodes(&self.shared_cache, consistent_db_view)?;
+            let nodes_fetched = fetcher.fetch_nodes(&self.shared_cache, provider)?;
             stats.fetched_nodes += nodes_fetched;
             stats.measure_proof_fetch_db_part();
         }
@@ -796,7 +794,7 @@ impl RootHashCalculator {
 
     fn fetch_missing_account_trie_nodes<Provider>(
         &mut self,
-        consistent_db_view: &ConsistentDbView<Provider>,
+        provider: &Provider,
         stats: &mut Stats,
     ) -> Result<(), SparseTrieError>
     where
@@ -819,7 +817,7 @@ impl RootHashCalculator {
 
         if !fetcher.is_empty() {
             stats.start_proof_fetch_db();
-            let nodes_fetched = fetcher.fetch_nodes(&self.shared_cache, consistent_db_view)?;
+            let nodes_fetched = fetcher.fetch_nodes(&self.shared_cache, provider)?;
             stats.fetched_nodes += nodes_fetched;
             stats.measure_proof_fetch_db_part();
         }
@@ -851,7 +849,7 @@ impl RootHashCalculator {
 
     pub fn calculate_root_hash_with_sparse_trie<Provider>(
         &mut self,
-        consistent_db_view: ConsistentDbView<Provider>,
+        provider: Provider,
         shared_cache: SharedCacheV2,
         outcome: &ExecutionOutcome,
     ) -> Result<(B256, SparseTrieMetrics), SparseTrieError>
@@ -866,7 +864,7 @@ impl RootHashCalculator {
         stats.start();
         self.prepare_changes_for_storage_trie(outcome)?;
         stats.measure_prepare(true);
-        self.do_first_fetch(&consistent_db_view, &mut stats)?;
+        self.do_first_fetch(&provider, &mut stats)?;
 
         let mut loop_break = false;
         for _ in 0..10 {
@@ -875,7 +873,7 @@ impl RootHashCalculator {
             stats.measure_insert(true);
             if !ok {
                 stats.start();
-                self.fetch_missing_storage_nodes(&consistent_db_view, &mut stats)?;
+                self.fetch_missing_storage_nodes(&provider, &mut stats)?;
                 stats.measure_proof_fetch(true);
                 continue;
             }
@@ -899,7 +897,7 @@ impl RootHashCalculator {
             stats.measure_insert(false);
             if !ok {
                 stats.start();
-                self.fetch_missing_account_trie_nodes(&consistent_db_view, &mut stats)?;
+                self.fetch_missing_account_trie_nodes(&provider, &mut stats)?;
                 stats.measure_proof_fetch(false);
                 continue;
             }

@@ -9,9 +9,7 @@ use alloy_trie::Nibbles;
 use rayon::prelude::*;
 use reth_errors::ProviderError;
 use reth_execution_errors::trie::StateProofError;
-use reth_provider::{
-    providers::ConsistentDbView, BlockReader, DBProvider, DatabaseProviderFactory,
-};
+use reth_provider::{BlockReader, DBProvider, DatabaseProviderFactory};
 use reth_trie::{proof::Proof, MultiProof as RethMultiProof, MultiProofTargets, EMPTY_ROOT_HASH};
 use reth_trie_db::{DatabaseHashedCursorFactory, DatabaseTrieCursorFactory};
 use serde::{Deserialize, Serialize};
@@ -55,15 +53,15 @@ pub struct StorageMultiProof {
 
 #[derive(Debug)]
 pub struct TrieFetcher<Provider> {
-    consistent_db_view: ConsistentDbView<Provider>,
+    provider: Provider,
 }
 
 impl<Provider> TrieFetcher<Provider>
 where
     Provider: DatabaseProviderFactory<Provider: BlockReader> + Send + Sync,
 {
-    pub fn new(consistent_db_view: ConsistentDbView<Provider>) -> Self {
-        Self { consistent_db_view }
+    pub fn new(provider: Provider) -> Self {
+        Self { provider }
     }
 
     pub fn fetch_missing_nodes(
@@ -76,7 +74,7 @@ where
             .into_par_iter()
             .map(|targets| -> Result<MultiProof, FetchNodeError> {
                 let start = Instant::now();
-                let provider = self.consistent_db_view.provider_ro()?;
+                let provider = self.provider.database_provider_ro()?;
                 let proof = Proof::new(
                     DatabaseTrieCursorFactory::new(provider.tx_ref()),
                     DatabaseHashedCursorFactory::new(provider.tx_ref()),

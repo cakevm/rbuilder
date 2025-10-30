@@ -10,9 +10,7 @@ use std::sync::Arc;
 
 use alloy_primitives::{Address, B256};
 
-use reth_provider::{
-    providers::ConsistentDbView, BlockReader, DatabaseProviderFactory, ExecutionOutcome,
-};
+use reth_provider::{BlockReader, DatabaseProviderFactory, ExecutionOutcome};
 
 #[cfg(any(test, feature = "benchmark-utils"))]
 pub mod test_utils;
@@ -92,7 +90,7 @@ pub enum ETHSpareMPTVersion {
 }
 
 pub fn prefetch_tries_for_accounts<'a, Provider>(
-    consistent_db_view: ConsistentDbView<Provider>,
+    provider: Provider,
     shared_cache: &SparseTrieSharedCache,
     changed_data: impl Iterator<Item = &'a ChangedAccountData>,
     version: ETHSpareMPTVersion,
@@ -104,7 +102,7 @@ where
         ETHSpareMPTVersion::V1 => {
             let mut metrics = SparseTrieMetrics::default();
             v1::reth_sparse_trie::prefetch_tries_for_accounts(
-                consistent_db_view,
+                provider,
                 shared_cache.cache_v1.clone(),
                 changed_data,
             )
@@ -115,7 +113,7 @@ where
             .map_err(|err| SparseTrieError::Other(err.into()))
         }
         ETHSpareMPTVersion::V2 => {
-            v2::prefetch_proofs(consistent_db_view, &shared_cache.cache_v2, changed_data)
+            v2::prefetch_proofs(provider, &shared_cache.cache_v2, changed_data)
         }
     }
 }
@@ -140,7 +138,7 @@ impl SparseTrieError {
 }
 
 pub fn calculate_root_hash_with_sparse_trie<Provider>(
-    consistent_db_view: ConsistentDbView<Provider>,
+    provider: Provider,
     outcome: &ExecutionOutcome,
     shared_cache: &SparseTrieSharedCache,
     local_cache: &mut SparseTrieLocalCache,
@@ -148,12 +146,12 @@ pub fn calculate_root_hash_with_sparse_trie<Provider>(
     version: ETHSpareMPTVersion,
 ) -> (Result<B256, SparseTrieError>, SparseTrieMetrics)
 where
-    Provider: DatabaseProviderFactory<Provider: BlockReader> + Send + Sync,
+    Provider: DatabaseProviderFactory<Provider: BlockReader> + Send + Sync + Clone,
 {
     if let Some(thread_pool) = thread_pool {
         thread_pool.rayon_pool.install(|| {
             calculate_root_hash_with_sparse_trie_internal(
-                consistent_db_view,
+                provider.clone(),
                 outcome,
                 shared_cache,
                 local_cache,
@@ -162,7 +160,7 @@ where
         })
     } else {
         calculate_root_hash_with_sparse_trie_internal(
-            consistent_db_view,
+            provider,
             outcome,
             shared_cache,
             local_cache,
@@ -172,7 +170,7 @@ where
 }
 
 pub fn calculate_root_hash_with_sparse_trie_internal<Provider>(
-    consistent_db_view: ConsistentDbView<Provider>,
+    provider: Provider,
     outcome: &ExecutionOutcome,
     shared_cache: &SparseTrieSharedCache,
     local_cache: &mut SparseTrieLocalCache,
@@ -184,7 +182,7 @@ where
     match version {
         ETHSpareMPTVersion::V1 => {
             let (result, metrics_v1) = v1::reth_sparse_trie::calculate_root_hash_with_sparse_trie(
-                consistent_db_view,
+                provider,
                 outcome,
                 shared_cache.cache_v1.clone(),
             );
@@ -195,7 +193,7 @@ where
         }
         ETHSpareMPTVersion::V2 => {
             let result = local_cache.calc.calculate_root_hash_with_sparse_trie(
-                consistent_db_view,
+                provider,
                 shared_cache.cache_v2.clone(),
                 outcome,
             );

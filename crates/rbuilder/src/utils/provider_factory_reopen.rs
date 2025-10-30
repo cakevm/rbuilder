@@ -19,6 +19,7 @@ use reth_provider::{
     BlockNumReader, BlockReader, DatabaseProviderFactory, HashedPostStateProvider, HeaderProvider,
     StateProviderBox, StaticFileProviderFactory,
 };
+use reth_trie::{hashed_cursor::HashedCursorFactory, trie_cursor::TrieCursorFactory};
 use std::{ops::DerefMut, path::PathBuf, sync::Arc};
 use tokio::sync::broadcast;
 use tokio_util::sync::CancellationToken;
@@ -288,7 +289,17 @@ impl<T, HasherType> RootHasherImpl<T, HasherType> {
 impl<T, HasherType> RootHasher for RootHasherImpl<T, HasherType>
 where
     HasherType: HashedPostStateProvider,
-    T: DatabaseProviderFactory<Provider: BlockReader> + Send + Sync + Clone + 'static,
+    T: DatabaseProviderFactory<
+            Provider: BlockReader
+                          + reth_provider::TrieReader
+                          + reth_provider::StageCheckpointReader
+                          + reth_provider::PruneCheckpointReader,
+        > + Send
+        + Sync
+        + Clone
+        + 'static,
+    reth_provider::providers::OverlayStateProviderFactory<T>:
+        reth_provider::DatabaseProviderROFactory<Provider: TrieCursorFactory + HashedCursorFactory>,
 {
     fn run_prefetcher(
         &self,

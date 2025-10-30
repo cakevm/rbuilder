@@ -6,6 +6,7 @@ use alloy_primitives::{BlockHash, BlockNumber, B256};
 use reth_errors::ProviderResult;
 use reth_provider::StateProviderBox;
 use reth_provider::{BlockReader, DatabaseProviderFactory, HeaderProvider};
+use reth_trie::{hashed_cursor::HashedCursorFactory, trie_cursor::TrieCursorFactory};
 use tracing::error;
 
 use super::{RootHasher, StateProviderFactory};
@@ -28,11 +29,17 @@ impl<P> StateProviderFactoryFromRethProvider<P> {
 
 impl<P> StateProviderFactory for StateProviderFactoryFromRethProvider<P>
 where
-    P: DatabaseProviderFactory<Provider: BlockReader>
-        + reth_provider::StateProviderFactory
+    P: DatabaseProviderFactory<
+            Provider: BlockReader
+                          + reth_provider::TrieReader
+                          + reth_provider::StageCheckpointReader
+                          + reth_provider::PruneCheckpointReader,
+        > + reth_provider::StateProviderFactory
         + HeaderProvider<Header = Header>
         + Clone
         + 'static,
+    reth_provider::providers::OverlayStateProviderFactory<P>:
+        reth_provider::DatabaseProviderROFactory<Provider: TrieCursorFactory + HashedCursorFactory>,
 {
     fn latest(&self) -> ProviderResult<StateProviderBox> {
         self.provider.latest()

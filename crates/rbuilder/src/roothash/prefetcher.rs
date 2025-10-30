@@ -4,7 +4,6 @@ use ahash::{HashMap, HashSet};
 use alloy_eips::BlockNumHash;
 use alloy_primitives::Address;
 use eth_sparse_mpt::*;
-use reth::providers::providers::ConsistentDbView;
 use reth_provider::{BlockReader, DatabaseProviderFactory};
 use tokio::sync::broadcast::{
     self,
@@ -23,7 +22,7 @@ const CONSUME_SIM_ORDERS_BATCH: usize = 128;
 /// Runs a process that prefetches pieces of the trie based on the slots used by the order in simulation
 /// Its a blocking call so it should be spawned on the separate thread.
 pub fn run_trie_prefetcher<P>(
-    parent_num_hash: BlockNumHash,
+    _parent_num_hash: BlockNumHash,
     shared_sparse_mpt_cache: SparseTrieSharedCache,
     version: ETHSpareMPTVersion,
     provider: P,
@@ -32,11 +31,6 @@ pub fn run_trie_prefetcher<P>(
 ) where
     P: DatabaseProviderFactory<Provider: BlockReader> + Send + Sync + Clone,
 {
-    let consistent_db_view = ConsistentDbView::new(
-        provider,
-        Some((parent_num_hash.hash, parent_num_hash.number)),
-    );
-
     // here we mark data that was fetched for this slot before
     let mut fetched_accounts: HashSet<Address> = HashSet::default();
     let mut fetched_slots: HashSet<SlotKey> = HashSet::default();
@@ -142,7 +136,7 @@ pub fn run_trie_prefetcher<P>(
 
         let start = Instant::now();
         match prefetch_tries_for_accounts(
-            consistent_db_view.clone(),
+            provider.clone(),
             &shared_sparse_mpt_cache,
             fetch_request.values(),
             version,

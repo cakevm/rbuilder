@@ -73,9 +73,7 @@ impl<CTX: ContextTr, P: PrecompileProvider<CTX, Output = InterpreterResult>> Pre
         inc_precompile_cache_misses();
 
         // call the precompile if cache miss
-        let output = self
-            .precompile
-            .run(context, inputs);
+        let output = self.precompile.run(context, inputs);
 
         if let Some(output) = output.clone().transpose() {
             // insert the result into the cache

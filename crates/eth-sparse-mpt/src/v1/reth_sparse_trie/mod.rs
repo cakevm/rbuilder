@@ -1,9 +1,7 @@
 use alloy_primitives::B256;
 use change_set::{prepare_change_set, prepare_change_set_for_prefetch};
 use hash::RootHashError;
-use reth_provider::{
-    providers::ConsistentDbView, BlockReader, DatabaseProviderFactory, ExecutionOutcome,
-};
+use reth_provider::{BlockReader, DatabaseProviderFactory, ExecutionOutcome};
 use std::time::{Duration, Instant};
 
 pub mod change_set;
@@ -58,7 +56,7 @@ impl SparseTrieError {
 
 /// Prefetches data
 pub fn prefetch_tries_for_accounts<'a, Provider>(
-    consistent_db_view: ConsistentDbView<Provider>,
+    provider: Provider,
     shared_cache: SparseTrieSharedCache,
     changed_data: impl Iterator<Item = &'a ChangedAccountData>,
 ) -> Result<SparseTrieMetrics, SparseTrieError>
@@ -71,7 +69,7 @@ where
     let change_set = prepare_change_set_for_prefetch(changed_data);
     metrics.change_set_time += start.elapsed();
 
-    let fetcher = TrieFetcher::new(consistent_db_view);
+    let fetcher = TrieFetcher::new(provider);
 
     for _ in 0..3 {
         let start = Instant::now();
@@ -99,11 +97,11 @@ where
     Err(SparseTrieError::FailedToFetchData)
 }
 
-/// Calculate root hash for the given outcome on top of the block defined by consistent_db_view.
+/// Calculate root hash for the given outcome on top of the block defined by the provider.
 /// * shared_cache should be created once for each parent block and it stores fetched parts of the trie
 /// * It uses rayon for parallelism and the thread pool should be configured from outside.
 pub fn calculate_root_hash_with_sparse_trie<Provider>(
-    consistent_db_view: ConsistentDbView<Provider>,
+    provider: Provider,
     outcome: &ExecutionOutcome,
     shared_cache: SparseTrieSharedCache,
 ) -> (Result<B256, SparseTrieError>, SparseTrieMetrics)
@@ -112,7 +110,7 @@ where
 {
     let mut metrics = SparseTrieMetrics::default();
 
-    let fetcher = TrieFetcher::new(consistent_db_view);
+    let fetcher = TrieFetcher::new(provider);
 
     let start = Instant::now();
     let change_set = prepare_change_set(outcome.bundle_accounts_iter());

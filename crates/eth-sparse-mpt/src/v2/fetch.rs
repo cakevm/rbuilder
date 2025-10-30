@@ -8,8 +8,7 @@ use rayon::prelude::*;
 use alloy_primitives::B256;
 use alloy_trie::Nibbles;
 use reth_provider::{
-    providers::ConsistentDbView, BlockHashReader, BlockNumReader, BlockReader, DBProvider,
-    DatabaseProviderFactory,
+    BlockHashReader, BlockNumReader, BlockReader, DBProvider, DatabaseProviderFactory,
 };
 use reth_trie::{
     proof::{Proof, StorageProof},
@@ -49,7 +48,7 @@ impl MissingNodesFetcher {
     pub fn fetch_nodes<Provider>(
         &mut self,
         shared_cache: &SharedCacheV2,
-        consistent_db_view: &ConsistentDbView<Provider>,
+        provider: &Provider,
     ) -> Result<usize, SparseTrieError>
     where
         Provider: DatabaseProviderFactory<Provider: BlockReader> + Send + Sync,
@@ -61,14 +60,14 @@ impl MissingNodesFetcher {
             .into_par_iter()
             .map(
                 |(hashed_address, (targets, requested_proofs))| -> Result<(), SparseTrieError> {
-                    let provider = consistent_db_view
-                        .provider_ro()
+                    let provider_ro = provider
+                        .database_provider_ro()
                         .map_err(SparseTrieError::other)?;
                     if !last_block_hash.is_zero() {
-                        let block_number = provider
+                        let block_number = provider_ro
                             .last_block_number()
                             .map_err(SparseTrieError::other)?;
-                        let block_hash = provider
+                        let block_hash = provider_ro
                             .block_hash(block_number)
                             .map_err(SparseTrieError::other)?;
                         if block_hash != Some(shared_cache.last_block_hash) {
@@ -77,8 +76,8 @@ impl MissingNodesFetcher {
                     }
 
                     let proof = StorageProof::new_hashed(
-                        DatabaseTrieCursorFactory::new(provider.tx_ref()),
-                        DatabaseHashedCursorFactory::new(provider.tx_ref()),
+                        DatabaseTrieCursorFactory::new(provider_ro.tx_ref()),
+                        DatabaseHashedCursorFactory::new(provider_ro.tx_ref()),
                         hashed_address,
                     );
                     let storge_multiproof = proof
@@ -100,14 +99,14 @@ impl MissingNodesFetcher {
             )
             .collect::<Result<(), _>>()?;
 
-        let provider = consistent_db_view
-            .provider_ro()
+        let provider_ro = provider
+            .database_provider_ro()
             .map_err(SparseTrieError::other)?;
         if !last_block_hash.is_zero() {
-            let block_number = provider
+            let block_number = provider_ro
                 .last_block_number()
                 .map_err(SparseTrieError::other)?;
-            let block_hash = provider
+            let block_hash = provider_ro
                 .block_hash(block_number)
                 .map_err(SparseTrieError::other)?;
             if block_hash != Some(shared_cache.last_block_hash) {
@@ -116,8 +115,8 @@ impl MissingNodesFetcher {
         }
 
         let proof = Proof::new(
-            DatabaseTrieCursorFactory::new(provider.tx_ref()),
-            DatabaseHashedCursorFactory::new(provider.tx_ref()),
+            DatabaseTrieCursorFactory::new(provider_ro.tx_ref()),
+            DatabaseHashedCursorFactory::new(provider_ro.tx_ref()),
         );
         let targets = MultiProofTargets::accounts(std::mem::take(&mut self.account_proof_targets));
         let multiproof = proof.multiproof(targets).map_err(SparseTrieError::other)?;

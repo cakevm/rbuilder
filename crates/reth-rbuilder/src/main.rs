@@ -17,9 +17,10 @@ use reth::{
     primitives::Header,
 };
 use reth_node_ethereum::{node::EthereumAddOns, EthereumNode};
+use reth_provider::providers::OverlayStateProviderFactory;
 use reth_provider::{
     providers::BlockchainProvider, BlockReader, ChainSpecProvider, DatabaseProviderFactory,
-    HeaderProvider,
+    DatabaseProviderROFactory, HeaderProvider,
 };
 use reth_transaction_pool::{blobstore::DiskFileBlobStore, EthTransactionPool};
 use std::{
@@ -82,13 +83,22 @@ fn spawn_rbuilder<P>(
     pool: EthTransactionPool<P, DiskFileBlobStore>,
     config_path: PathBuf,
 ) where
-    P: DatabaseProviderFactory<Provider: BlockReader>
-        + reth_provider::StateProviderFactory
+    P: DatabaseProviderFactory<
+            Provider: BlockReader
+                          + reth_provider::TrieReader
+                          + reth_provider::StageCheckpointReader
+                          + reth_provider::PruneCheckpointReader,
+        > + reth_provider::StateProviderFactory
         + HeaderProvider<Header = Header>
-        + reth_provider::ChainSpecProvider
+        + ChainSpecProvider
         + Clone
         + 'static,
     <P as ChainSpecProvider>::ChainSpec: EthereumHardforks,
+    OverlayStateProviderFactory<P>: DatabaseProviderROFactory,
+    OverlayStateProviderFactory<P>: DatabaseProviderROFactory<
+        Provider: reth_trie::trie_cursor::TrieCursorFactory
+                      + reth_trie::hashed_cursor::HashedCursorFactory,
+    >,
 {
     let _handle = task::spawn(async move {
         let result = async {

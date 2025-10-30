@@ -3,10 +3,12 @@ mod prefetcher;
 use alloy_eips::BlockNumHash;
 use alloy_primitives::B256;
 use eth_sparse_mpt::*;
-use reth::providers::{providers::ConsistentDbView, ExecutionOutcome};
+use reth::providers::ExecutionOutcome;
+use reth_provider::providers::OverlayStateProviderFactory;
 use reth_provider::{BlockReader, DatabaseProviderFactory, HashedPostStateProvider};
-use reth_trie::TrieInput;
+use reth_trie::{hashed_cursor::HashedCursorFactory, trie_cursor::TrieCursorFactory};
 use reth_trie_parallel::root::{ParallelStateRoot, ParallelStateRootError};
+use std::sync::Arc;
 use tracing::trace;
 
 pub use prefetcher::run_trie_prefetcher;
@@ -70,17 +72,24 @@ impl RootHashContext {
 fn calculate_parallel_root_hash<P, HasherType>(
     hasher: &HasherType,
     outcome: &ExecutionOutcome,
-    consistent_db_view: ConsistentDbView<P>,
+    provider: P,
+    parent_block_hash: Option<B256>,
 ) -> Result<B256, ParallelStateRootError>
 where
     HasherType: HashedPostStateProvider,
     P: DatabaseProviderFactory<Provider: BlockReader> + Send + Sync + Clone + 'static,
+    OverlayStateProviderFactory<P>:
+        reth_provider::DatabaseProviderROFactory<Provider: TrieCursorFactory + HashedCursorFactory>,
 {
     let hashed_post_state = hasher.hashed_post_state(outcome.state());
-    let parallel_root_calculator = ParallelStateRoot::new(
-        consistent_db_view.clone(),
-        TrieInput::from_state(hashed_post_state),
-    );
+    let prefix_sets = hashed_post_state.construct_prefix_sets();
+
+    let mut factory = OverlayStateProviderFactory::new(provider.clone());
+    factory = factory
+        .with_block_hash(parent_block_hash)
+        .with_hashed_state_overlay(Some(Arc::new(hashed_post_state.into_sorted())));
+
+    let parallel_root_calculator = ParallelStateRoot::new(factory, prefix_sets.freeze());
     parallel_root_calculator.incremental_root()
 }
 
@@ -97,14 +106,13 @@ pub fn calculate_state_root<P, HasherType>(
 where
     HasherType: HashedPostStateProvider,
     P: DatabaseProviderFactory<Provider: BlockReader> + Send + Sync + Clone + 'static,
+    OverlayStateProviderFactory<P>:
+        reth_provider::DatabaseProviderROFactory<Provider: TrieCursorFactory + HashedCursorFactory>,
 {
-    let consistent_db_view = match config.mode {
-        RootHashMode::CorrectRoot => ConsistentDbView::new(
-            provider.clone(),
-            Some((parent_num_hash.hash, parent_num_hash.number)),
-        ),
-        RootHashMode::IgnoreParentHash => ConsistentDbView::new_with_latest_tip(provider.clone())
-            .map_err(|err| RootHashError::Other(err.into()))?,
+    // Determine parent block hash based on mode
+    let parent_block_hash = match config.mode {
+        RootHashMode::CorrectRoot => Some(parent_num_hash.hash),
+        RootHashMode::IgnoreParentHash => None,
     };
 
     let reference_root_hash = if config.compare_sparse_trie_output {
@@ -113,11 +121,16 @@ where
             thread_pool
                 .rayon_pool
                 .install(|| {
-                    calculate_parallel_root_hash(hasher, outcome, consistent_db_view.clone())
+                    calculate_parallel_root_hash(
+                        hasher,
+                        outcome,
+                        provider.clone(),
+                        parent_block_hash,
+                    )
                 })
                 .map_err(|err| RootHashError::Other(err.into()))?
         } else {
-            calculate_parallel_root_hash(hasher, outcome, consistent_db_view.clone())
+            calculate_parallel_root_hash(hasher, outcome, provider.clone(), parent_block_hash)
                 .map_err(|err| RootHashError::Other(err.into()))?
         }
     } else {
@@ -126,7 +139,7 @@ where
 
     let root = if config.use_sparse_trie {
         let (root, metrics) = calculate_root_hash_with_sparse_trie(
-            consistent_db_view,
+            provider.clone(),
             outcome,
             shared_cache,
             local_cache,
@@ -145,7 +158,7 @@ where
             }
         }
     } else {
-        calculate_parallel_root_hash(hasher, outcome, consistent_db_view)
+        calculate_parallel_root_hash(hasher, outcome, provider.clone(), parent_block_hash)
             .map_err(|err| RootHashError::Other(err.into()))?
     };
 

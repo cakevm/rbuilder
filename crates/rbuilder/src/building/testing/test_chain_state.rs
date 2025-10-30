@@ -18,13 +18,13 @@ use reth::{
     providers::ProviderFactory,
     rpc::types::{engine::PayloadAttributes, Withdrawal},
 };
-use reth_provider::BlockWriter;
 use reth_chainspec::{ChainSpec, EthereumHardfork, MAINNET};
 use reth_db::{cursor::DbCursorRW, tables, transaction::DbTxMut};
 use reth_errors::ProviderResult;
 use reth_primitives::{Recovered, TransactionSigned};
 use reth_primitives_traits::Block as _;
 use reth_provider::test_utils::{create_test_provider_factory, MockNodeTypesWithDB};
+use reth_provider::BlockWriter;
 use revm::primitives::hardfork::SpecId;
 use std::sync::Arc;
 
