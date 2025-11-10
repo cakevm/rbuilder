@@ -49,34 +49,34 @@ codegen-units = 1
 incremental = false
 
 [workspace.dependencies]
-reth = { git = "https://github.com/paradigmxyz/reth", rev = "7905fba" }
-reth-cli-util = { git = "https://github.com/paradigmxyz/reth", rev = "7905fba" }
-reth-db = { git = "https://github.com/paradigmxyz/reth", rev = "7905fba" }
-reth-db-common = { git = "https://github.com/paradigmxyz/reth", rev = "7905fba" }
-reth-errors = { git = "https://github.com/paradigmxyz/reth", rev = "7905fba" }
-reth-payload-builder = { git = "https://github.com/paradigmxyz/reth", rev = "7905fba" }
-reth-node-api = { git = "https://github.com/paradigmxyz/reth", rev = "7905fba" }
-reth-node-ethereum = { git = "https://github.com/paradigmxyz/reth", rev = "7905fba" }
-reth-trie = { git = "https://github.com/paradigmxyz/reth", rev = "7905fba" }
-reth-trie-parallel = { git = "https://github.com/paradigmxyz/reth", rev = "7905fba" }
-reth-node-core = { git = "https://github.com/paradigmxyz/reth", rev = "7905fba" }
-reth-primitives = { git = "https://github.com/paradigmxyz/reth", rev = "7905fba"}
-reth-primitives-traits = { git = "https://github.com/paradigmxyz/reth", rev = "7905fba" }
-reth-provider = { git = "https://github.com/paradigmxyz/reth", rev = "7905fba", features = ["test-utils"] }
-reth-chainspec = { git = "https://github.com/paradigmxyz/reth", rev = "7905fba" }
-reth-evm = { git = "https://github.com/paradigmxyz/reth", rev = "7905fba" }
-reth-evm-ethereum = { git = "https://github.com/paradigmxyz/reth", rev = "7905fba" }
-reth-execution-errors = { git = "https://github.com/paradigmxyz/reth", rev = "7905fba" }
-reth-trie-db = { git = "https://github.com/paradigmxyz/reth", rev = "7905fba" }
-reth-transaction-pool = { git = "https://github.com/paradigmxyz/reth", rev = "7905fba" }
+reth = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
+reth-cli-util = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
+reth-db = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
+reth-db-common = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
+reth-errors = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
+reth-payload-builder = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
+reth-node-api = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
+reth-node-ethereum = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
+reth-trie = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
+reth-trie-parallel = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
+reth-node-core = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
+reth-primitives = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1"}
+reth-primitives-traits = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
+reth-provider = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1", features = ["test-utils"] }
+reth-chainspec = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
+reth-evm = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
+reth-evm-ethereum = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
+reth-execution-errors = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
+reth-trie-db = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
+reth-transaction-pool = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
 
 # compatible with reth v1.8.2 dependencies
-revm = { version = "30.2.0", features = [
+revm = { version = "31.0.1", features = [
     "std",
     "secp256k1",
     "optional_balance_check",
 ], default-features = false }
-revm-inspectors = { version = "0.31.0", default-features = false }
+revm-inspectors = { version = "0.32.0", default-features = false }
 
 ethereum_ssz_derive = "0.9.0"
 ethereum_ssz = "0.9.0"
@@ -84,7 +84,7 @@ ethereum_ssz = "0.9.0"
 alloy-primitives = { version = "1.4.1", features = ["getrandom"] }
 alloy-rlp = "0.3.10"
 alloy-chains = "0.2.5"
-alloy-evm = { version = "0.22.5", default-features = false }
+alloy-evm = { version = "0.23.0", default-features = false }
 alloy-provider = { version = "1.0.41", features = ["ipc", "pubsub", "ws"] }
 alloy-eips = { version = "1.0.41" }
 alloy-rpc-types = { version = "1.0.41" }
