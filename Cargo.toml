@@ -49,29 +49,29 @@ codegen-units = 1
 incremental = false
 
 [workspace.dependencies]
-reth = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
-reth-cli-util = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
-reth-db = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
-reth-db-common = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
-reth-errors = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
-reth-payload-builder = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
-reth-node-api = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
-reth-node-ethereum = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
-reth-trie = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
-reth-trie-parallel = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
-reth-node-core = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
-reth-primitives = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1"}
-reth-primitives-traits = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
-reth-provider = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1", features = ["test-utils"] }
-reth-chainspec = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
-reth-evm = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
-reth-evm-ethereum = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
-reth-execution-errors = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
-reth-trie-db = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
-reth-transaction-pool = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.1" }
+reth = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.3" }
+reth-cli-util = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.3" }
+reth-db = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.3" }
+reth-db-common = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.3" }
+reth-errors = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.3" }
+reth-payload-builder = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.3" }
+reth-node-api = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.3" }
+reth-node-ethereum = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.3" }
+reth-trie = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.3" }
+reth-trie-parallel = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.3" }
+reth-node-core = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.3" }
+reth-primitives = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.3"}
+reth-primitives-traits = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.3" }
+reth-provider = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.3", features = ["test-utils"] }
+reth-chainspec = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.3" }
+reth-evm = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.3" }
+reth-evm-ethereum = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.3" }
+reth-execution-errors = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.3" }
+reth-trie-db = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.3" }
+reth-transaction-pool = { git = "https://github.com/paradigmxyz/reth", tag = "v1.9.3" }
 
 # compatible with reth v1.8.2 dependencies
-revm = { version = "31.0.1", features = [
+revm = { version = "31.0.2", features = [
     "std",
     "secp256k1",
     "optional_balance_check",
